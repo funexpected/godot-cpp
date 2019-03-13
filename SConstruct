@@ -22,7 +22,7 @@ else:
 opts = Variables([], ARGUMENTS)
 
 opts.Add(EnumVariable('platform', 'Target platform', host_platform,
-                    allowed_values=('linux', 'osx', 'windows'),
+                    allowed_values=('linux', 'osx', 'windows', 'ios'),
                     ignorecase=2))
 opts.Add(EnumVariable('bits', 'Target platform bits', 'default', ('default', '32', '64')))
 opts.Add(BoolVariable('use_llvm', 'Use the LLVM compiler - only effective when targeting Linux', False))
@@ -110,6 +110,20 @@ elif env['platform'] == 'windows':
 
         env.Append(CCFLAGS=['-g', '-O3', '-std=c++14', '-Wwrite-strings'])
         env.Append(LINKFLAGS=['--static', '-Wl,--no-undefined', '-static-libgcc', '-static-libstdc++'])
+
+elif env['platform'] == 'ios':
+    env['IPHONEPLATFORM'] = 'iPhoneOS'
+    env['IPHONEPATH'] = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain'
+    env['IPHONESDK'] = '/Applications/Xcode.app/Contents/Developer/Platforms/${IPHONEPLATFORM}.platform/Developer/SDKs/${IPHONEPLATFORM}.sdk/'
+    env.Append(CCFLAGS = ('-fmodules -fcxx-modules -std=c++14 -fno-objc-arc -arch arm64 -arch armv7 -arch armv7s -fmessage-length=0 -fno-strict-aliasing -fdiagnostics-print-source-range-info -fdiagnostics-show-category=id -fdiagnostics-parseable-fixits -fpascal-strings -fblocks -isysroot $IPHONESDK -fvisibility=hidden -miphoneos-version-min=9.0 -MMD -MT dependencies').split())
+    if env['target'] == 'debug':
+        env.Append(CCFLAGS=['-Og'])
+    elif env['target'] == 'release':
+        env.Append(CCFLAGS=['-O3'])
+    env.Append(LINKFLAGS = ['-arch', 'arm64', '-arch', 'armv7', '-arch', 'armv7s', '-miphoneos-version-min=9.0',
+        '-isysroot', '$IPHONESDK',
+        '-Wl,-undefined,dynamic_lookup',
+    ])
 
 
 env.Append(CPPPATH=['.', env['headers_dir'], 'include', 'include/gen', 'include/core'])
