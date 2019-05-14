@@ -148,7 +148,11 @@ sources = []
 add_sources(sources, 'src/core', 'cpp')
 add_sources(sources, 'src/gen', 'cpp')
 
-library = env.StaticLibrary(
-    target='bin/' + 'libgodot-cpp.{}.{}.{}'.format(env['platform'], env['target'], env['bits']), source=sources
-)
+
+
+if platform=='ios':
+    library = env.StaticLibrary(target='../libcpp.' + env['target'] + '.lib', source=sources)
+else:
+    library = env.SharedLibrary(target='../libcpp.' + env['target'] + '.dylib', source=sources)
 Default(library)
+
