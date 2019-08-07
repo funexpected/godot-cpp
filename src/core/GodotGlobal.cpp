@@ -24,7 +24,10 @@ namespace godot {
 
 void *_RegisterState::nativescript_handle;
 int _RegisterState::language_index;
+
 const godot_gdnative_core_api_struct *api = nullptr;
+const godot_gdnative_core_1_1_api_struct *core_1_1_api = nullptr;
+
 const godot_gdnative_ext_nativescript_api_struct *nativescript_api = nullptr;
 const godot_gdnative_ext_nativescript_1_1_api_struct *nativescript_1_1_api = nullptr;
 
@@ -67,10 +70,20 @@ void Godot::print_error(const String &description, const String &function, const
 }
 
 void ___register_types();
+void ___init_method_bindings();
 
 void Godot::gdnative_init(godot_gdnative_init_options *options) {
 	godot::api = options->api_struct;
 	godot::gdnlib = options->gd_native_library;
+
+	const godot_gdnative_api_struct *core_extension = godot::api->next;
+
+	while (core_extension) {
+		if (core_extension->version.major == 1 && core_extension->version.minor == 1) {
+			godot::core_1_1_api = (const godot_gdnative_core_1_1_api_struct *)core_extension;
+		}
+		core_extension = core_extension->next;
+	}
 
 	// now find our extensions
 	for (int i = 0; i < godot::api->num_extensions; i++) {
@@ -111,6 +124,7 @@ void Godot::nativescript_init(void *handle) {
 	godot::_RegisterState::language_index = godot::nativescript_1_1_api->godot_nativescript_register_instance_binding_data_functions(binding_funcs);
 
 	___register_types();
+	___init_method_bindings();
 }
 
 void Godot::nativescript_terminate(void *handle) {
