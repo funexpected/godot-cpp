@@ -150,9 +150,11 @@ add_sources(sources, 'src/gen', 'cpp')
 
 
 
-if platform=='ios':
+if env['platform']=='ios':
+    print("build ios")
     library = env.StaticLibrary(target='../libcpp.' + env['target'] + '.lib', source=sources)
 else:
+    print("buuuuild ", platform)
     library = env.SharedLibrary(target='../libcpp.' + env['target'] + '.dylib', source=sources)
 Default(library)
 
