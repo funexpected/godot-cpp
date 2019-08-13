@@ -22,7 +22,7 @@ static GDCALLINGCONV void wrapper_destroy(void *data, void *wrapper) {
 
 namespace godot {
 
-void *_RegisterState::nativescript_handle;
+void *GDNLIB_NAME(nativescript_handle);
 int _RegisterState::language_index;
 
 const godot_gdnative_core_api_struct *api = nullptr;
@@ -115,7 +115,7 @@ void Godot::gdnative_profiling_add_data(const char *p_signature, uint64_t p_time
 }
 
 void Godot::nativescript_init(void *handle) {
-	godot::_RegisterState::nativescript_handle = handle;
+	godot::GDNLIB_NAME(nativescript_handle) = handle;
 
 	godot_instance_binding_functions binding_funcs = {};
 	binding_funcs.alloc_instance_binding_data = wrapper_create;

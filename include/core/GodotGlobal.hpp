@@ -5,6 +5,13 @@
 #include "String.hpp"
 #include <gdnative_api_struct.gen.h>
 
+#ifndef GDNLIB_PREFIX
+#define GDNLIB_PREFIX
+#endif
+#define GDNLIB_PASTER(x,y) x ## y
+#define GDNLIB_EVALUATOR(x,y)  GDNLIB_PASTER(x,y)
+#define GDNLIB_NAME(fun) GDNLIB_EVALUATOR(GDNLIB_PREFIX, fun)
+
 namespace godot {
 
 extern "C" const godot_gdnative_core_api_struct *api;
@@ -12,7 +19,8 @@ extern "C" const godot_gdnative_core_1_1_api_struct *core_1_1_api;
 extern "C" const godot_gdnative_ext_nativescript_api_struct *nativescript_api;
 extern "C" const godot_gdnative_ext_nativescript_1_1_api_struct *nativescript_1_1_api;
 
-extern "C" const void *gdnlib;
+extern "C" const void *GDNLIB_NAME(gdnlib);
+extern "C" void *GDNLIB_NAME(nativescript_handle);
 
 class Godot {
 
@@ -35,7 +43,6 @@ public:
 };
 
 struct _RegisterState {
-	static void *nativescript_handle;
 	static int language_index;
 };
 

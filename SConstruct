@@ -1,53 +1,53 @@
 #!/usr/bin/env python
 
-    import os
-    import sys
+import os
+import sys
 
 
-    def add_sources(sources, dir, extension):
-        for f in os.listdir(dir):
-            if f.endswith('.' + extension):
-                sources.append(dir + '/' + f)
+def add_sources(sources, dir, extension):
+    for f in os.listdir(dir):
+        if f.endswith('.' + extension):
+            sources.append(dir + '/' + f)
 
 
 # Try to detect the host platform automatically.
 # This is used if no `platform` argument is passed
-    if sys.platform.startswith('linux'):
-        host_platform = 'linux'
-    elif sys.platform == 'darwin':
-        host_platform = 'osx'
-    elif sys.platform == 'win32' or sys.platform == 'msys':
-        host_platform = 'windows'
-    else:
-        raise ValueError(
-            'Could not detect platform automatically, please specify with '
-            'platform=<platform>'
-        )
+if sys.platform.startswith('linux'):
+    host_platform = 'linux'
+elif sys.platform == 'darwin':
+    host_platform = 'osx'
+elif sys.platform == 'win32' or sys.platform == 'msys':
+    host_platform = 'windows'
+else:
+    raise ValueError(
+        'Could not detect platform automatically, please specify with '
+        'platform=<platform>'
+    )
 
-    opts = Variables([], ARGUMENTS)
-    opts.Add(EnumVariable(
-        'platform',
-        'Target platform',
-        host_platform,
-        allowed_values=('linux', 'osx', 'windows'),
-        ignorecase=2
-    ))
-    opts.Add(EnumVariable(
-        'bits',
-        'Target platform bits',
-        'default',
-        ('default', '32', '64')
-    ))
-    opts.Add(BoolVariable(
-        'use_llvm',
-        'Use the LLVM compiler - only effective when targeting Linux',
-        False
-    ))
-    opts.Add(BoolVariable(
-        'use_mingw',
-        'Use the MinGW compiler instead of MSVC - only effective on Windows',
-        False
-    ))
+opts = Variables([], ARGUMENTS)
+opts.Add(EnumVariable(
+    'platform',
+    'Target platform',
+    host_platform,
+    allowed_values=('linux', 'osx', 'windows', 'ios'),
+    ignorecase=2
+))
+opts.Add(EnumVariable(
+    'bits',
+    'Target platform bits',
+    'default',
+    ('default', '32', '64')
+))
+opts.Add(BoolVariable(
+    'use_llvm',
+    'Use the LLVM compiler - only effective when targeting Linux',
+    False
+))
+opts.Add(BoolVariable(
+    'use_mingw',
+    'Use the MinGW compiler instead of MSVC - only effective on Windows',
+    False
+))
 # Must be the same setting as used for cpp_bindings
 opts.Add(EnumVariable(
     'target',
@@ -217,10 +217,8 @@ add_sources(sources, 'src/core', 'cpp')
 add_sources(sources, 'src/gen', 'cpp')
 
 if env['platform']=='ios':
-    print("build ios")
     library = env.StaticLibrary(target='../libcpp.' + env['target'] + '.lib', source=sources)
 else:
-    print("buuuuild ", platform)
     library = env.SharedLibrary(target='../libcpp.' + env['target'] + '.dylib', source=sources)
 Default(library)
 

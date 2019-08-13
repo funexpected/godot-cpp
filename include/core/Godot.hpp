@@ -20,7 +20,9 @@
 #include <GDNativeLibrary.hpp>
 #include <NativeScript.hpp>
 
+
 namespace godot {
+
 
 template <class T>
 T *as(const Object *obj) {
@@ -40,7 +42,7 @@ public:                                                                         
 	};                                                                                                                                              \
 	inline static Name *_new() {                                                                                                                    \
 		godot::NativeScript *script = godot::NativeScript::_new();                                                                                  \
-		script->set_library(godot::get_wrapper<godot::GDNativeLibrary>((godot_object *)godot::gdnlib));                                             \
+		script->set_library(godot::get_wrapper<godot::GDNativeLibrary>((godot_object *)godot::GDNLIB_NAME(gdnlib)));                                             \
 		script->set_class_name(#Name);                                                                                                              \
 		Name *instance = godot::as<Name>(script->new_());                                                                                           \
 		return instance;                                                                                                                            \
@@ -120,8 +122,8 @@ void register_class() {
 
 	_TagDB::register_type(T::___get_id(), T::___get_base_id());
 
-	godot::nativescript_api->godot_nativescript_register_class(godot::_RegisterState::nativescript_handle, T::___get_type_name(), T::___get_base_type_name(), create, destroy);
-	godot::nativescript_1_1_api->godot_nativescript_set_type_tag(godot::_RegisterState::nativescript_handle, T::___get_type_name(), (const void *)typeid(T).hash_code());
+	godot::nativescript_api->godot_nativescript_register_class(godot::GDNLIB_NAME(nativescript_handle), T::___get_type_name(), T::___get_base_type_name(), create, destroy);
+	godot::nativescript_1_1_api->godot_nativescript_set_type_tag(godot::GDNLIB_NAME(nativescript_handle), T::___get_type_name(), (const void *)typeid(T).hash_code());
 	T::_register_methods();
 }
 
@@ -135,8 +137,8 @@ void register_tool_class() {
 
 	_TagDB::register_type(T::___get_id(), T::___get_base_id());
 
-	godot::nativescript_api->godot_nativescript_register_tool_class(godot::_RegisterState::nativescript_handle, T::___get_type_name(), T::___get_base_type_name(), create, destroy);
-	godot::nativescript_1_1_api->godot_nativescript_set_type_tag(godot::_RegisterState::nativescript_handle, T::___get_type_name(), (const void *)typeid(T).hash_code());
+	godot::nativescript_api->godot_nativescript_register_tool_class(godot::GDNLIB_NAME(nativescript_handle), T::___get_type_name(), T::___get_base_type_name(), create, destroy);
+	godot::nativescript_1_1_api->godot_nativescript_set_type_tag(godot::GDNLIB_NAME(nativescript_handle), T::___get_type_name(), (const void *)typeid(T).hash_code());
 	T::_register_methods();
 }
 
@@ -243,7 +245,7 @@ void register_method(const char *name, M method_ptr, godot_method_rpc_mode rpc_t
 	godot_method_attributes attr = {};
 	attr.rpc_type = rpc_type;
 
-	godot::nativescript_api->godot_nativescript_register_method(godot::_RegisterState::nativescript_handle, ___get_method_class_name(method_ptr), name, attr, method);
+	godot::nativescript_api->godot_nativescript_register_method(godot::GDNLIB_NAME(nativescript_handle), ___get_method_class_name(method_ptr), name, attr, method);
 }
 
 template <class T, class P>
@@ -354,7 +356,7 @@ void register_property(const char *name, P(T::*var), P default_value, godot_meth
 	get_func.free_func = godot::api->godot_free;
 	get_func.get_func = &_PropertyDefaultGetFunc<T, P>::_wrapped_getter;
 
-	godot::nativescript_api->godot_nativescript_register_property(godot::_RegisterState::nativescript_handle, T::___get_type_name(), name, &attr, set_func, get_func);
+	godot::nativescript_api->godot_nativescript_register_property(godot::GDNLIB_NAME(nativescript_handle), T::___get_type_name(), name, &attr, set_func, get_func);
 }
 
 template <class T, class P>
@@ -391,7 +393,7 @@ void register_property(const char *name, void (T::*setter)(P), P (T::*getter)(),
 	get_func.free_func = godot::api->godot_free;
 	get_func.get_func = &_PropertyGetFunc<T, P>::_wrapped_getter;
 
-	godot::nativescript_api->godot_nativescript_register_property(godot::_RegisterState::nativescript_handle, T::___get_type_name(), name, &attr, set_func, get_func);
+	godot::nativescript_api->godot_nativescript_register_property(godot::GDNLIB_NAME(nativescript_handle), T::___get_type_name(), name, &attr, set_func, get_func);
 }
 
 template <class T, class P>
@@ -425,7 +427,7 @@ void register_signal(String name, Dictionary args = Dictionary()) {
 		signal.args[i].type = args.values()[i];
 	}
 
-	godot::nativescript_api->godot_nativescript_register_signal(godot::_RegisterState::nativescript_handle, T::___get_type_name(), &signal);
+	godot::nativescript_api->godot_nativescript_register_signal(godot::GDNLIB_NAME(nativescript_handle), T::___get_type_name(), &signal);
 
 	for (int i = 0; i < signal.num_args; i++) {
 		godot::api->godot_string_destroy(&signal.args[i].name);
