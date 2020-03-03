@@ -375,6 +375,7 @@ else:
 
 if env['generate_bindings']:
     # Actually create the bindings here
+    print("generating bindigs for " + json_api_file)
     import binding_generator
 
     binding_generator.generate_bindings(json_api_file)
@@ -390,13 +391,25 @@ if env['platform'] == 'android':
 if env['platform'] == 'ios':
     arch_suffix = env['ios_arch']
 
-library = env.StaticLibrary(
-    target='bin/' + 'libgodot-cpp.{}.{}.{}{}'.format(
-        env['platform'],
-        env['target'],
-        arch_suffix,
-        env['LIBSUFFIX']
-    ), source=sources
-)
+if env['platform'] == 'ios':
+    print("Building static library")
+    library = env.StaticLibrary(
+        target='bin/' + 'libgodot-cpp.{}.{}.{}{}'.format(
+            env['platform'],
+            env['target'],
+            arch_suffix,
+            env['LIBSUFFIX']
+        ), source=sources
+    )
+else:
+    print("Building shared library")
+    library = env.SharedLibrary(
+        target='bin/' + 'libgodot-cpp.{}.{}.{}{}'.format(
+            env['platform'],
+            env['target'],
+            arch_suffix,
+            env['LIBSUFFIX']
+        ), source=sources
+    )
 Default(library)
 
