@@ -5,12 +5,17 @@
 #include "String.hpp"
 #include <gdnative_api_struct.gen.h>
 
-#ifndef GDNLIB_PREFIX
-#define GDNLIB_PREFIX
+#ifndef GDN_PREFIX
+#define GDN_PREFIX
 #endif
-#define GDNLIB_PASTER(x,y) x ## y
-#define GDNLIB_EVALUATOR(x,y)  GDNLIB_PASTER(x,y)
-#define GDNLIB_NAME(fun) GDNLIB_EVALUATOR(GDNLIB_PREFIX, fun)
+#define __GDN_PASTER(x,y) x ## y
+#define __GDN_EVALUATOR(x,y)  __GDN_PASTER(x,y)
+#define GDN_NAME(fun) __GDN_EVALUATOR(GDN_PREFIX, fun)
+#define GDN_HEADER()								\
+namespace godot {									\
+	const void* GDN_NAME(gdnlib) = NULL;			\
+	void* GDN_NAME(nativescript_handle) = NULL;		\
+}													\
 
 namespace godot {
 
@@ -27,10 +32,8 @@ extern "C" const godot_gdnative_ext_videodecoder_api_struct *videodecoder_api;
 extern "C" const godot_gdnative_ext_net_api_struct *net_api;
 extern "C" const godot_gdnative_ext_net_3_2_api_struct *net_3_2_api;
 
-extern "C" const void *GDNLIB_NAME(gdnlib);
-extern "C" void *GDNLIB_NAME(nativescript_handle);
-//const void* GDNLIB_NAME(gdnlib) = NULL;
-//void* GDNLIB_NAME(nativescript_handle) = NULL;
+extern "C" const void *GDN_NAME(gdnlib);
+extern "C" void *GDN_NAME(nativescript_handle);
 
 
 class Godot {
@@ -42,13 +45,13 @@ public:
 
 	static void gdnative_init(godot_gdnative_init_options *options) {
 		godot::api = options->api_struct;
-		godot::GDNLIB_NAME(gdnlib) = options->gd_native_library;
+		godot::GDN_NAME(gdnlib) = options->gd_native_library;
 		gdnative_post_init(options);
 	};
 	static void gdnative_post_init(godot_gdnative_init_options *options);
 	static void gdnative_terminate(godot_gdnative_terminate_options *o);
 	static void nativescript_init(void *handle) {	
-		godot::GDNLIB_NAME(nativescript_handle) = handle;
+		godot::GDN_NAME(nativescript_handle) = handle;
 	}
 	
 	

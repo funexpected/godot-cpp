@@ -54,7 +54,7 @@ inline T *create_custom_class_instance() {
 	static godot_method_bind *mb_set_class_name = godot::api->godot_method_bind_get_method("NativeScript", "set_class_name");
 	godot_object *script = script_constructor();
 	{
-		const void *args[] = { godot::GDNLIB_NAME(gdnlib) };
+		const void *args[] = { godot::GDN_NAME(gdnlib) };
 		godot::api->godot_method_bind_ptrcall(mb_set_library, script, args, nullptr);
 	}
 	{
@@ -179,8 +179,8 @@ void register_class() {
 
 	_TagDB::register_type(T::___get_id(), T::___get_base_id());
 
-	godot::nativescript_api->godot_nativescript_register_class(GDNLIB_NAME(nativescript_handle), T::___get_type_name(), T::___get_base_type_name(), create, destroy);
-	godot::nativescript_1_1_api->godot_nativescript_set_type_tag(GDNLIB_NAME(nativescript_handle), T::___get_type_name(), (const void *)typeid(T).hash_code());
+	godot::nativescript_api->godot_nativescript_register_class(GDN_NAME(nativescript_handle), T::___get_type_name(), T::___get_base_type_name(), create, destroy);
+	godot::nativescript_1_1_api->godot_nativescript_set_type_tag(GDN_NAME(nativescript_handle), T::___get_type_name(), (const void *)typeid(T).hash_code());
 	T::_register_methods();
 }
 
@@ -194,8 +194,8 @@ void register_tool_class() {
 
 	_TagDB::register_type(T::___get_id(), T::___get_base_id());
 
-	godot::nativescript_api->godot_nativescript_register_tool_class(GDNLIB_NAME(nativescript_handle), T::___get_type_name(), T::___get_base_type_name(), create, destroy);
-	godot::nativescript_1_1_api->godot_nativescript_set_type_tag(GDNLIB_NAME(nativescript_handle), T::___get_type_name(), (const void *)typeid(T).hash_code());
+	godot::nativescript_api->godot_nativescript_register_tool_class(GDN_NAME(nativescript_handle), T::___get_type_name(), T::___get_base_type_name(), create, destroy);
+	godot::nativescript_1_1_api->godot_nativescript_set_type_tag(GDN_NAME(nativescript_handle), T::___get_type_name(), (const void *)typeid(T).hash_code());
 	T::_register_methods();
 }
 
@@ -302,7 +302,7 @@ void register_method(const char *name, M method_ptr, godot_method_rpc_mode rpc_t
 	godot_method_attributes attr = {};
 	attr.rpc_type = rpc_type;
 
-	godot::nativescript_api->godot_nativescript_register_method(GDNLIB_NAME(nativescript_handle), ___get_method_class_name(method_ptr), name, attr, method);
+	godot::nativescript_api->godot_nativescript_register_method(GDN_NAME(nativescript_handle), ___get_method_class_name(method_ptr), name, attr, method);
 }
 
 // User can specify a derived class D to register the method for, instead of it being inferred.
@@ -420,7 +420,7 @@ void register_property(const char *name, P(T::*var), P default_value, godot_meth
 	get_func.free_func = godot::api->godot_free;
 	get_func.get_func = &_PropertyDefaultGetFunc<T, P>::_wrapped_getter;
 
-	godot::nativescript_api->godot_nativescript_register_property(GDNLIB_NAME(nativescript_handle), T::___get_type_name(), name, &attr, set_func, get_func);
+	godot::nativescript_api->godot_nativescript_register_property(GDN_NAME(nativescript_handle), T::___get_type_name(), name, &attr, set_func, get_func);
 }
 
 template <class T, class P>
@@ -457,7 +457,7 @@ void register_property(const char *name, void (T::*setter)(P), P (T::*getter)(),
 	get_func.free_func = godot::api->godot_free;
 	get_func.get_func = &_PropertyGetFunc<T, P>::_wrapped_getter;
 
-	godot::nativescript_api->godot_nativescript_register_property(GDNLIB_NAME(nativescript_handle), T::___get_type_name(), name, &attr, set_func, get_func);
+	godot::nativescript_api->godot_nativescript_register_property(GDN_NAME(nativescript_handle), T::___get_type_name(), name, &attr, set_func, get_func);
 }
 
 template <class T, class P>
@@ -491,7 +491,7 @@ void register_signal(String name, Dictionary args = Dictionary()) {
 		signal.args[i].type = args.values()[i];
 	}
 
-	godot::nativescript_api->godot_nativescript_register_signal(GDNLIB_NAME(nativescript_handle), T::___get_type_name(), &signal);
+	godot::nativescript_api->godot_nativescript_register_signal(GDN_NAME(nativescript_handle), T::___get_type_name(), &signal);
 
 	for (int i = 0; i < signal.num_args; i++) {
 		godot::api->godot_string_destroy(&signal.args[i].name);

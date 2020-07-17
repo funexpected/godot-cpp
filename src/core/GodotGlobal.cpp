@@ -22,7 +22,7 @@ static GDCALLINGCONV void wrapper_destroy(void *data, void *wrapper) {
 
 namespace godot {
 
-void *GDNLIB_NAME(nativescript_handle);
+void *GDN_NAME(nativescript_handle);
 int _RegisterState::language_index;
 
 const godot_gdnative_core_api_struct *api = nullptr;
