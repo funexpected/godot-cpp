@@ -79,10 +79,7 @@ void Godot::print_error(const String &description, const String &function, const
 void ___register_types();
 void ___init_method_bindings();
 
-void Godot::gdnative_init(godot_gdnative_init_options *options) {
-	godot::api = options->api_struct;
-	godot::gdnlib = options->gd_native_library;
-
+void Godot::gdnative_post_init(godot_gdnative_init_options *options) {
 	const godot_gdnative_api_struct *core_extension = godot::api->next;
 
 	while (core_extension) {
@@ -153,13 +150,10 @@ void Godot::gdnative_profiling_add_data(const char *p_signature, uint64_t p_time
 	godot::nativescript_1_1_api->godot_nativescript_profiling_add_data(p_signature, p_time);
 }
 
-void Godot::nativescript_init(void *handle) {
-	godot::GDNLIB_NAME(nativescript_handle) = handle;
-
+void Godot::nativescript_post_init() {
 	godot_instance_binding_functions binding_funcs = {};
 	binding_funcs.alloc_instance_binding_data = wrapper_create;
 	binding_funcs.free_instance_binding_data = wrapper_destroy;
-
 	godot::_RegisterState::language_index = godot::nativescript_1_1_api->godot_nativescript_register_instance_binding_data_functions(binding_funcs);
 }
 
