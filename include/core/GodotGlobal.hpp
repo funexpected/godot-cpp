@@ -49,9 +49,7 @@ public:
 	static void gdnative_terminate(godot_gdnative_terminate_options *o);
 	static void nativescript_init(void *handle) {	
 		godot::GDNLIB_NAME(nativescript_handle) = handle;
-		nativescript_post_init();
 	}
-	static void nativescript_post_init();
 	
 	
 	static void nativescript_terminate(void *handle);
