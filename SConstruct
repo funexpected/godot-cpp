@@ -235,15 +235,30 @@ elif env['platform'] == 'ios':
     env['AR'] = compiler_path + 'ar'
     env['RANLIB'] = compiler_path + 'ranlib'
 
-    env.Append(CCFLAGS=['-g', '-std=c++14', '-arch', env['ios_arch'], '-isysroot', sdk_path])
+    env.Append(CCFLAGS=[
+        '-g', '-std=c++14', 
+        '-arch', env['ios_arch'], 
+        '-isysroot', sdk_path,
+        '-fmessage-length=0',
+        '-fno-strict-aliasing',
+        '-fdiagnostics-print-source-range-info',
+        '-fdiagnostics-show-category=id',
+        '-fdiagnostics-parseable-fixits',
+        '-fpascal-strings',
+        '-fblocks',
+        '-MMD', '-MT', 'dependencies',
+        '-miphoneos-version-min=10.0'
+    ])
     env.Append(LINKFLAGS=[
         '-arch',
         env['ios_arch'],
-        '-framework',
-        'Cocoa',
-        '-Wl,-undefined,dynamic_lookup',
+        
+        #'-Wl,-U,symbol_name'
+        # or this:
+        #'-Wl,-undefined,dynamic_lookup',
+
         '-isysroot', sdk_path,
-        '-F' + sdk_path
+        '-F' + sdk_path,
     ])
 
     if env['target'] == 'debug':
@@ -386,30 +401,22 @@ add_sources(sources, 'src/core', 'cpp')
 add_sources(sources, 'src/gen', 'cpp')
 
 arch_suffix = env['bits']
+lib_suffix = env['LIBSUFFIX']
 if env['platform'] == 'android':
     arch_suffix = env['android_arch']
 if env['platform'] == 'ios':
     arch_suffix = env['ios_arch']
+    lib_suffix = '.dylib'
+if env['platform'] == 'osx':
+    lib_suffix = '.dylib'
 
-if env['platform'] == 'ios':
-    print("Building static library")
-    library = env.StaticLibrary(
-        target='bin/' + 'libgodot-cpp.{}.{}.{}{}'.format(
-            env['platform'],
-            env['target'],
-            arch_suffix,
-            env['LIBSUFFIX']
-        ), source=sources
-    )
-else:
-    print("Building shared library")
-    library = env.SharedLibrary(
-        target='bin/' + 'libgodot-cpp.{}.{}.{}{}'.format(
-            env['platform'],
-            env['target'],
-            arch_suffix,
-            env['LIBSUFFIX']
-        ), source=sources
-    )
+library = env.SharedLibrary(
+    target='../' + 'libcpp.{}.{}.{}{}'.format(
+        env['platform'],
+        env['target'],
+        arch_suffix,
+        lib_suffix
+    ), source=sources
+)
 Default(library)
 

@@ -15,8 +15,27 @@
 namespace godot {									\
 	const void* GDN_NAME(gdnlib) = NULL;			\
 	void* GDN_NAME(nativescript_handle) = NULL;		\
-}													\
-
+}
+#define GDN_GDNATIVE_INIT(o) {						\
+	godot::GDN_NAME(gdnlib) = o;					\
+	godot::Godot::gdnative_init(o);					\
+}
+#define GDN_NATIVESCRIPT_INIT(o) {					\
+	godot::GDN_NAME(nativescript_handle) = o;		\
+	godot::Godot::nativescript_init(o);				\
+}
+#define GDN_REGISTER( ... ) 																	\
+GDN_HEADER();																					\
+extern "C" void GDN_EXPORT GDN_NAME(gdnative_init)(godot_gdnative_init_options *o) {			\
+	godot::Godot::gdnative_init(o);																\
+}																								\
+extern "C" void GDN_EXPORT GDN_NAME(gdnative_terminate)(godot_gdnative_terminate_options *o) {	\
+	godot::Godot::gdnative_terminate(o);														\
+}																								\
+extern "C" void GDN_EXPORT GDN_NAME(nativescript_init)(void *h) {								\
+	godot::Godot::nativescript_init(h);															\
+	__VA_ARGS__																					\
+}
 namespace godot {
 
 extern "C" const godot_gdnative_core_api_struct *api;
