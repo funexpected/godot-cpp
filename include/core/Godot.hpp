@@ -100,7 +100,7 @@ public:                                                                         
 		return godot::detail::create_custom_class_instance<Name>();                         \
 	}                                                                                       \
 	inline static size_t ___get_id() { return typeid(Name).hash_code(); }                   \
-	inline static size_t ___get_base_id() { return Base::___get_id(); }                     \
+	inline static size_t ___get_base_id() { return typeid(Base).hash_code(); }                     \
 	inline static const char *___get_base_type_name() { return Base::___get_class_name(); } \
 	inline static godot::Object *___get_from_variant(godot::Variant a) {                    \
 		return (godot::Object *)godot::detail::get_custom_class_instance<Name>(             \
