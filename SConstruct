@@ -407,15 +407,17 @@ add_sources(sources, 'src/gen', 'cpp')
 
 arch_suffix = env['bits']
 lib_suffix = env['LIBSUFFIX']
+lib_type = env.SharedLibrary
 if env['platform'] == 'android':
     arch_suffix = env['android_arch']
 if env['platform'] == 'ios':
     arch_suffix = env['ios_arch']
-    lib_suffix = '.dylib'
+    lib_suffix = '.lib'
+    lib_type = env.StaticLibrary
 if env['platform'] == 'osx':
     lib_suffix = '.dylib'
 
-library = env.SharedLibrary(
+library = lib_type(
     target='../' + 'libcpp.{}.{}.{}{}'.format(
         env['platform'],
         env['target'],
