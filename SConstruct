@@ -239,7 +239,7 @@ elif env['platform'] == 'ios':
     env['RANLIB'] = compiler_path + 'ranlib'
 
     env.Append(CCFLAGS=[
-        '-g', '-std=c++14', 
+        '-std=c++14', 
         '-arch', env['ios_arch'], 
         '-isysroot', sdk_path,
         '-fmessage-length=0',
@@ -265,7 +265,7 @@ elif env['platform'] == 'ios':
     ])
 
     if env['target'] == 'debug':
-        env.Append(CCFLAGS=['-Og', '-g'])
+        env.Append(CCFLAGS=['-Og', '-gline-tables-only'])
     elif env['target'] == 'release':
         env.Append(CCFLAGS=['-O3'])
 
